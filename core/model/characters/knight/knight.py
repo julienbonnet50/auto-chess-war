@@ -1,5 +1,5 @@
-from model.abilities.damage.basic import BasicAttack
-from model.characters.character import Character, Element
+from core.model.abilities.damage.basic import BasicAttack
+from core.model.characters.character import Character, Element
 class Knight(Character):
     def __init__(self, name: str, level: int, element: Element, **kwargs):
         base_stats = {

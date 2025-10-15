@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List, Dict, Optional
 from enum import Enum
-from model.battle.battle_character import BattleCharacter
-from model.characters.character import Character
+from core.model.battle.battle_character import BattleCharacter
+from core.model.characters.character import Character
 
 
 class BattleState(Enum):
@@ -29,7 +29,6 @@ class Battle:
     def start_battle(self):
         """Start the battle with all turn meters at 0 and determine first active character."""
         self.state = BattleState.ONGOING
-        self.battle_log.append("⚔️ Battle started!")
 
         # Initialize turn meters
         for bc in self.team_a + self.team_b:
@@ -39,7 +38,6 @@ class Battle:
         all_chars = self.team_a + self.team_b
         first_char = max(all_chars, key=lambda bc: (bc.character.speed, bc.character.damage))
         self.active_character = first_char
-        self.battle_log.append(f"🎯 First turn: {first_char.character.name}")
 
     def next_turn(self) -> str:
         """Progress the battle to the next action; always returns a character turn."""
@@ -94,7 +92,6 @@ class Battle:
         enemies = self._get_enemies_bc(active_bc)
 
         result = active_bc.use_ability(ability_index, target_bc, allies, enemies)
-        self.battle_log.append(f"Turn {self.current_turn}: {result}")
 
         # Update death status immediately
         self._update_death_status()
@@ -136,7 +133,6 @@ class Battle:
         for bc in self.team_a + self.team_b:
             if bc.current_health <= 0 and bc.is_alive:
                 bc.is_alive = False
-                self.battle_log.append(f"💀 {bc.character.name} has been defeated!")
 
     def _process_end_of_turn(self, character: BattleCharacter):
         to_remove = []
@@ -153,20 +149,17 @@ class Battle:
 
         if not team_a_alive and not team_b_alive:
             self.state = BattleState.DRAW
-            self.battle_log.append("🤝 Battle ended in a draw!")
         elif not team_a_alive:
             self.state = BattleState.DEFEAT
-            self.battle_log.append("💀 Team A has been defeated!")
         elif not team_b_alive:
             self.state = BattleState.VICTORY
-            self.battle_log.append("🎉 Team B has been defeated!")
 
     def get_battle_summary(self) -> Dict:
         return {
             "state": self.state.value,
             "turn": self.current_turn,
-            "team_a": [str(bc) for bc in self.team_a],
-            "team_b": [str(bc) for bc in self.team_b],
+            "team_a": [bc for bc in self.team_a],
+            "team_b": [bc for bc in self.team_b],
             "active_character": str(self.get_active_character()) if self.get_active_character() else None,
             "log": self.battle_log[-5:]
         }

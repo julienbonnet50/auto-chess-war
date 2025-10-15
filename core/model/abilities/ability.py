@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from enum import Enum
 import random
 
-from model.characters.character import Character
+from core.model.characters.character import Character
+from core.model.battle.battle_character import BattleCharacter
 
 class TargetType(Enum):
     SELF = "self"
@@ -27,21 +28,24 @@ class Ability:
         self.current_cooldown = current_cooldown
         self.target_type = target_type
     
-    def execute(self, caster: Character, target: Optional[Character] = None, 
-                allies: List[Character] = None, enemies: List[Character] = None) -> str:
+    def execute(self, caster: Union[Character, BattleCharacter], target: Optional[Union[Character, BattleCharacter]] = None,
+                allies: List[Union[Character, BattleCharacter]] = None, enemies: List[Union[Character, BattleCharacter]] = None) -> str:
         """Execute the ability"""
         if self.current_cooldown > 0:
             return f"{self.name} is on cooldown! ({self.current_cooldown} turns remaining)"
-        
+
         # Set cooldown
         self.current_cooldown = self.cooldown
-        
+
+        # Default behaviour: call _apply_effect which subclasses should override.
         return self._apply_effect(caster, target, allies, enemies)
     
-    def _apply_effect(self, caster: Character, target: Optional[Character], 
-                     allies: List[Character], enemies: List[Character]) -> str:
-        """Override this method with specific ability logic"""
-        return f"{caster.name} uses {self.name}!"
+    def _apply_effect(self, caster: Union[Character, BattleCharacter], target: Optional[Union[Character, BattleCharacter]],
+                     allies: List[Union[Character, BattleCharacter]], enemies: List[Union[Character, BattleCharacter]]) -> str:
+        """Override this method with specific ability logic. Default message works with either
+        Character or BattleCharacter caster types."""
+        caster_name = caster.character.name if isinstance(caster, BattleCharacter) else getattr(caster, 'name', 'Unknown')
+        return f"{caster_name} uses {self.name}!"
     
     def reduce_cooldown(self):
         """Reduce cooldown by 1 at the start of each turn"""
