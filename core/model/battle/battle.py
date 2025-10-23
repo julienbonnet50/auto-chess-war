@@ -2,16 +2,8 @@ from __future__ import annotations
 from typing import List, Dict, Optional
 from enum import Enum
 from core.model.battle.battle_character import BattleCharacter
+from core.model.battle.battle_state import BattleState
 from core.model.characters.character import Character
-
-
-class BattleState(Enum):
-    SETUP = "setup"
-    ONGOING = "ongoing"
-    VICTORY = "victory"
-    DEFEAT = "defeat"
-    DRAW = "draw"
-
 
 class Battle:
     TURN_METER_THRESHOLD = 1000  # Full meter

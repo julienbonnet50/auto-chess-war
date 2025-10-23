@@ -1,17 +1,12 @@
 from enum import Enum
 
-class Element(Enum):
-    FIRE = "Fire"
-    WATER = "Water"
-    WIND = "Wind"
-    GOLD = "Gold"
-    SILVER = "Silver"
+from core.model.characters.element import CharacterElement
 
 class Character:
     def __init__(self, 
             name: str,
             level: int,
-            element: Element,
+            char_element: CharacterElement,
             health: int,
             speed: int,
             damage: int,
@@ -22,7 +17,7 @@ class Character:
         # Initialize character attributes
         self.name: str = name
         self.level: int = level
-        self.element: Element = element
+        self.char_element: CharacterElement = char_element
         self.health: int = health
         self.speed: int = speed
         self.damage: int = damage
@@ -31,4 +26,4 @@ class Character:
         self.magic_resist: int = magic_resist
         
     def __repr__(self) -> str:
-        return f"Character(name={self.name}, level={self.level}, element={self.element.value}, health={self.health}, speed={self.speed}, damage={self.damage}, ability_power={self.ability_power}, armor={self.armor}, magic_resist={self.magic_resist})"
+        return f"Character(name={self.name}, level={self.level}, char_element={self.char_element.value}, health={self.health}, speed={self.speed}, damage={self.damage}, ability_power={self.ability_power}, armor={self.armor}, magic_resist={self.magic_resist})"
